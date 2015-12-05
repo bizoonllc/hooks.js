@@ -1,0 +1,27 @@
+{
+  "name": "hooks",
+  "version": "0.1.0",
+  "description": "Library to mount hooks to functions",
+  "license": "MIT",
+  "main": "hooks.js",
+  "scripts": {},
+  "author": "Bizoon LLC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bizoonllc/hooks.git"
+  },
+  "keywords": [
+    "hooks",
+    "server",
+    "client",
+    "browser"
+  ],
+  "dependencies": {
+    "bluebird": "^2.9.26",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "karma": "^0.13.15"
+  }
+}
