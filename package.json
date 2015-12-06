@@ -1,5 +1,5 @@
 {
-  "name": "hooks",
+  "name": "hooks.js",
   "version": "0.1.0",
   "description": "Library to mount hooks to functions",
   "license": "MIT",
