@@ -27,30 +27,30 @@ myObject.someFunction.post(function() {...});
 myObject.someFunction();
 ```
 
-It can be also very useful for hooking setters and getters if you don't want to put too much complex login inside them in the class:
+It can be also very useful for hooking setters and getters if you don't want to put too much complex logic inside them in the class:
 
 ```
 function myClass () {
 
-	this._constructor = function() {
-		this.setName.pre(function(name){
-			if (name.length < 5)
-				throw new Error('Name is too short');
-		});
-		this.getName.pre(function(){
-			if (this.name === undefined)
-				throw new Error('Name is not defined');
-		});
-	};
+  this._constructor = function() {
+    this.setName.pre(function(name){
+      if (name.length < 5)
+        throw new Error('Name is too short');
+    });
+    this.getName.pre(function(){
+      if (this.name === undefined)
+        throw new Error('Name is not defined');
+    });
+  };
 
-	this.setName = function(name) {
-		this.name = name;
-		return this;
-	};
+  this.setName = function(name) {
+    this.name = name;
+    return this;
+  };
 
-	this.getName = function() {
-		return this.name;
-	};
+  this.getName = function() {
+    return this.name;
+  };
 
 }
 ```
@@ -61,12 +61,12 @@ You can also hookify only matching functions:
 hooks.hookify(myObject);
 
 myObject.pre('^get*$', function() {
-	console.log('Getter fired');
+  console.log('Getter fired');
 });
 
 myObject.pre(new RegExp('^get*$'), function(name) {
-	if (this.name === undefined)
-		throw new Error('Variable is undefined');
+  if (this.name === undefined)
+    throw new Error('Variable is undefined');
 });
 ```
 
