@@ -34,11 +34,11 @@ function myClass () {
 
   this._constructor = function() {
     this.setName.pre(function(args, meta){
-      if (args.name.length < 5)
+      if (args[0].length < 5)
         throw new Error('Name is too short');
     });
     this.getName.pre(function(args, meta){
-      if (args.name === undefined)
+      if (args[0] === undefined)
         throw new Error('Name is not defined');
     });
   };
