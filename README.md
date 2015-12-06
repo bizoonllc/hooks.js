@@ -126,7 +126,7 @@ myClassObj.myFunction();
 If you want to add hooks to only one specified function:
 
 ```
-var myFunction = function  () {
+var myFunction = function  (user_name) {
   // Something
 }
 
@@ -138,14 +138,14 @@ myFunction = hooks.mount('myFunction', myFunction);
 ...
 
 // Set custom hook actions
-hooks.pre('myFunction', function() {
+hooks.pre('myFunction', function(user_name) {
   console.log('Do sth before');
 });
 
 ...
 
 // Call function
-myFunction();
+myFunction('Anna');
 ```
 
 ### 3) Set running hooks manually
@@ -162,7 +162,7 @@ function myFunction () {
 ...
 
 // Set custom hook actions
-hooks.pre('myFunction', function() {
+hooks.pre('myFunction', function(some_argument, some_other_argument) {
   console.log('Do sth before');
 });
 
