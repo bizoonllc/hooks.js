@@ -4,7 +4,8 @@
   "description": "Library to mount hooks to functions",
   "license": "MIT",
   "main": "hooks.js",
-  "scripts": {},
+  "scripts": {
+  },
   "author": "Bizoon LLC",
   "repository": {
     "type": "git",
