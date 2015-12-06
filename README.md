@@ -38,8 +38,8 @@ function myClass () {
         throw new Error('Name is too short');
     });
     this.getName.pre(function(args, meta){
-      if (args[0] === undefined)
-        throw new Error('Name is not defined');
+      if (this.name === undefined)
+        throw new Error('Name is undefined');
     });
   };
 
