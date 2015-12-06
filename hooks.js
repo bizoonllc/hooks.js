@@ -11,6 +11,7 @@ function hooks() {
 			pre: {},
 			post: {},
 		},
+		defaultUsePromise: false,
 		log: false,
 	};
 	
@@ -22,7 +23,11 @@ function hooks() {
 	 */
 	
 	self.mount = function (fn) {
-		var usePromise = arguments[1] || true;
+		var usePromise;
+		if (arguments[1] !== undefined)
+			usePromise = arguments[1];
+		else
+			usePromise = private.defaultUsePromise;
 		/*
 		 * ASSIGN HOOK FUNCTIONS ON FUNCTION
 		 */
@@ -38,12 +43,16 @@ function hooks() {
 		fn.countPost = private._countPost;
 		return function() {
 			var args = arguments;
-			return private._run(fn, args, usePromise);
+			return private._run(this, fn, args, usePromise);
 		};
 	};
 	
 	self.hookify = function (object) {
-		var usePromise = arguments[1] || true;
+		var usePromise;
+		if (arguments[1] !== undefined)
+			usePromise = arguments[1];
+		else
+			usePromise = undefined;
 		/*
 		 * ASSIGN HOOK FUNCTIONS ON OBJECT
 		 */
@@ -130,12 +139,12 @@ function hooks() {
 		return self;
 	};
 	
-	private._runPre = function (fn) {
-		return private._runHook('pre', fn, arguments[1] || undefined, arguments[2] || true);
+	private._runPre = function (fn, args, usePromise) {
+		return private._runHook('pre', fn, args, usePromise);
 	};
 	
-	private._runPost = function (fn) {
-		return private._runHook('post', fn, arguments[1] || undefined, arguments[2] || true);
+	private._runPost = function (fn, args, usePromise) {
+		return private._runHook('post', fn, args, usePromise);
 	};
 	
 	private._runHook = function (type, fn, args, usePromise) {
@@ -179,14 +188,14 @@ function hooks() {
 		}
 	};
 	
-	private._run = function (fn) {
+	private._run = function (context, fn) {
 		var args = arguments[1];
 		var usePromise = arguments[2];
 		var result;
 		if (usePromise)
 			return private._runPre(fn, args, true)
 					.then(function(){
-						result = fn.apply(fn, args);
+						result = fn.apply(context, args);
 						return result;
 					})
 					.then(function(){
@@ -197,7 +206,7 @@ function hooks() {
 					});
 		else {
 			private._runPre(fn, args, false);
-			result = fn.apply(fn, args);
+			result = fn.apply(context, args);
 			private._runPost(fn, args, false);
 			return result;
 		}
