@@ -58,7 +58,16 @@ function myClass () {
 You can also hookify only matching functions:
 
 ```
-myObject.hoo
+hooks.hookify(myObject);
+
+myObject.pre('^get*$', function() {
+	console.log('Getter fired');
+});
+
+myObject.pre(new RegExp('^get*$'), function(name) {
+	if (this.name === undefined)
+		throw new Error('Variable is undefined');
+});
 ```
 
 ## II. API - ASSIGN
@@ -87,7 +96,7 @@ or
 
 ```
 hooks.hookify(myObject);
-myObject.myFunction;
+var myFunction = myObject.myFunction;
 ```
 
 ### pre
@@ -115,12 +124,10 @@ Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
 myObject.pre('^get*$', function() {
-	if (this.name === undefined)
-		throw new Error('Variable is undefined');
+  // Something
 });
 myObject.pre(new RegExp('^get*$'), function(name) {
-	if (this.name === undefined)
-		throw new Error('Variable is undefined');
+  // Something
 });
 ```
 
@@ -129,7 +136,7 @@ Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
 myObject.pre(new RegExp('^set*$'), function(newValue) {
-	console.log('Variable is updated');
+  // Something
 });
 ```
 
