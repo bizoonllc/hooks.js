@@ -26,10 +26,12 @@ function hooks() {
 		/*
 		 * ASSIGN HOOK FUNCTIONS ON FUNCTION
 		 */
-		fn.hooks = {
-			pre: [],
-			post: [],
-		};
+		if (fn.hooks === undefined)
+			fn.hooks = {
+				name: fn.name,
+				pre: [],
+				post: [],
+			};
 		fn.pre = private._pre;
 		fn.post = private._post;
 		fn.countPre = private._countPre;
@@ -51,8 +53,14 @@ function hooks() {
 		 * MOUNT HOOKS ON OBJECT FUNCTIONS
 		 */
 		_.each(object, function(fn, fnName){
-			if (typeof fn === 'function')
+			if (typeof fn === 'function') {
+				fn.hooks = {
+					name: fnName,
+					pre: [],
+					post: [],
+				};
 				object[fnName] = self.mount(fn, usePromise);
+			}
 		});
 		return self;
 	};
@@ -135,7 +143,7 @@ function hooks() {
 			var batch = [];
 			_.each(fn.hooks[type], function (hookFn, $index){
 				batch.push(function(){
-					return hookFn.apply(hooks, args);
+					return hookFn(args, fn.hooks);
 				});
 			})
 			if (private.log && window.console)
@@ -157,7 +165,7 @@ function hooks() {
 				if (private.log && window.console)
 					console.info('hooks: ' + fn.name + ' ' + type + '-hook (no promise) fired.');
 				_.each(fn.hooks[type], function (hookFn, $index){
-					hookFn.apply(hooks, args);
+					hookFn(args, fn.hooks);
 				});
 				if (private.log && window.console)
 					console.info('hooks: ' + fn.name + ' function ' + type + '-hook (no promise) finished.');

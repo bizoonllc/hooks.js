@@ -16,10 +16,10 @@ hooks.hookify(myObject);
 ...
 
 // set hook before function
-myObject.someFunction.pre(function() {...});
+myObject.someFunction.pre(function(args, meta) {...});
 
 // set hook after function
-myObject.someFunction.post(function() {...});
+myObject.someFunction.post(function(args, meta) {...});
 
 ...
 
@@ -33,12 +33,12 @@ It can be also very useful for hooking setters and getters if you don't want to 
 function myClass () {
 
   this._constructor = function() {
-    this.setName.pre(function(name){
-      if (name.length < 5)
+    this.setName.pre(function(args, meta){
+      if (args.name.length < 5)
         throw new Error('Name is too short');
     });
-    this.getName.pre(function(){
-      if (this.name === undefined)
+    this.getName.pre(function(args, meta){
+      if (args.name === undefined)
         throw new Error('Name is not defined');
     });
   };
@@ -60,13 +60,15 @@ You can also hookify only matching functions:
 ```
 hooks.hookify(myObject);
 
-myObject.pre('^get*$', function() {
+myObject.pre('^get*$', function(args, meta) {
   console.log('Getter fired');
 });
 
-myObject.pre(new RegExp('^get*$'), function(name) {
-  if (this.name === undefined)
-    throw new Error('Variable is undefined');
+myObject.pre(new RegExp('^get*$'), function(args, meta) {
+  var propertyName = meta.name.substr(3);
+  propertyName[0] = propertyName[0].toLowerCase();
+  if (this[propertyName] === undefined)
+    throw new Error(propertyName + ' property is undefined');
 });
 ```
 
@@ -103,7 +105,7 @@ var myFunction = myObject.myFunction;
 Arguments: (@prehook_callback:Function)
 
 ```
-myFunction.pre(function(){
+myFunction.pre(function(args, meta){
   // Something
 });
 ```
@@ -112,7 +114,7 @@ myFunction.pre(function(){
 Arguments: (@posthook_callback:Function)
 
 ```
-myFunction.post(function(){
+myFunction.post(function(args, meta){
   // Something
 });
 ```
@@ -123,10 +125,10 @@ myFunction.post(function(){
 Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
-myObject.pre('^get*$', function() {
+myObject.pre('^get*$', function(args, meta) {
   // Something
 });
-myObject.pre(new RegExp('^get*$'), function(name) {
+myObject.pre(new RegExp('^get*$'), function(args, meta) {
   // Something
 });
 ```
@@ -135,7 +137,7 @@ myObject.pre(new RegExp('^get*$'), function(name) {
 Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
-myObject.pre(new RegExp('^set*$'), function(newValue) {
+myObject.pre(new RegExp('^set*$'), function(args, meta) {
   // Something
 });
 ```
@@ -166,10 +168,10 @@ hooks.hookify(myClassObj);
 ...
 
 // Set custom hook actions
-myCustomObject.myFunction.pre(function(arg1, arg2) {
+myCustomObject.myFunction.pre(function(args, meta) {
   console.log('Do sth before');
 });
-myCustomObject.myOtherFunction.post(function() {
+myCustomObject.myOtherFunction.post(function(args, meta) {
   console.log('Do sth after');
 });
 
@@ -198,7 +200,7 @@ myFunction = hooks.mount(myFunction);
 ...
 
 // Set custom hook actions
-myFunction.pre(function(user_name) {
+myFunction.pre(function(args, meta) {
   console.log('Do sth before');
 });
 

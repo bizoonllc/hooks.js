@@ -6,21 +6,25 @@ var myFunction = function(name) {
 
 myFunction = hooks.mount(myFunction);
 
-myFunction.pre('myFunction', function(name) {
-	if (typeof name !== 'String')
-		throw new Error('Name is not a string!');
+// validate input and throw error with function name
+myFunction.pre('myFunction', function(args, meta) {
+	if (typeof args.name !== 'String')
+		throw new Error('Name is not a string in ' + meta.name + ' function!');
 });
 
-myFunction.pre('myFunction', function(name) {
-	name = name.toUpperCase();
+// modify input
+myFunction.pre('myFunction', function(args, meta) {
+	args.name = args.name.toUpperCase();
 });
 
-myFunction.pre('myFunction', function(name) {
-	name = name + '!';
+// modify input
+myFunction.pre('myFunction', function(args, meta) {
+	args.name = args.name + '!';
 });
 
-myFunction.post('myFunction', function(name) {
-	console.log('myFunction fired with "' + name + '" name.');
+// log information
+myFunction.post('myFunction', function(args, meta) {
+	console.log('myFunction fired with "' + args.name + '" name.');
 });
 
 myFunction('Anna');
