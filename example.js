@@ -14,11 +14,11 @@ $hooks.pre('myFunction', function(name) {
 });
 
 $hooks.pre('myFunction', function(name) {
-	return [name.toUpperCase()];
+	name = name.toUpperCase();
 });
 
 $hooks.pre('myFunction', function(name) {
-	return [name + '!'];
+	name = name + '!';
 });
 
 $hooks.post('myFunction', function(name) {
