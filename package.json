@@ -8,7 +8,7 @@
   "author": "Bizoon LLC",
   "repository": {
     "type": "git",
-    "url": "git://github.com/bizoonllc/hooks.git"
+    "url": "git://github.com/bizoonllc/hooks.js.git"
   },
   "keywords": [
     "hooks",
