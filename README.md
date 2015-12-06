@@ -33,6 +33,7 @@ It can be also very useful for hooking setters and getters if you don't want to 
 function myClass () {
 
   this._constructor = function() {
+	hooks.hookify(this);
     this.setName.pre(function(args, meta){
       if (args[0].length < 5)
         throw new Error('Name is too short');
