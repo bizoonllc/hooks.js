@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var Promise = require('bluebird');
+var hooksException = require('./hooksException');
 
 function hooks() {
 	
@@ -117,7 +118,7 @@ function hooks() {
 	
 	private._setRegexHooks = function(type, object, regexInput, hookFn) {
 		if (typeof regexInput !== 'string' && !(regexInput instanceof RegExp))
-			throw new Error('hooks exception: passed regex is not a string or instance of RegExp object');
+			throw new hooksException('passed regex is not a string or instance of RegExp object');
 		var regexObject;
 		if (regexInput instanceof RegExp)
 			regexObject = regexInput;
@@ -132,7 +133,7 @@ function hooks() {
 	
 	private._setHook = function (type, fn, hookFn) {
 		if (typeof hookFn !== 'function')
-			throw new Error('hooks exception: passed ' + type + '-hook is not a function');
+			throw new hooksException('passed ' + type + '-hook is not a function');
 		fn.hooks[type].push(hookFn);
 		if (private.log && window.console)
 			console.info('hooks: ' + fn.name + ' function ' + type + '-hook added.')
