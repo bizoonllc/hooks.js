@@ -2,7 +2,7 @@
 
 Hooks library provides full support for adding pre and post hooks to independent functions and functions in objects.
 
-##I. Installation
+## I. Installation
 
 `npm install hooks.js --save`
 
@@ -10,14 +10,15 @@ Use it like this:
 
 ```
 var hooks = require('hooks.js');
+
 // hooks singleton
 var globalHooks = hooks.global;
-// new local instance
+// or new local instance
 var localHooks = new hooks();
 
 ...
 
-// hookify object
+// Hookify!
 localHooks.hookify(myObject);
 
 ...
@@ -34,9 +35,9 @@ localHooks.post('someFunction', function() {...});
 myObject.someFunction();
 ```
 
-##II. API
+## II. API
 
-###pre
+### pre
 Arguments: (@event_name:String, @prehook_callback:Function)
 
 ```
@@ -45,7 +46,7 @@ hooks.pre('myFunction, function(){
 });
 ```
 
-###post
+### post
 Arguments: (@event_name:String, @posthook_callback:Function)
 
 ```
@@ -54,35 +55,35 @@ hooks.post('myFunction, function(){
 });
 ```
 
-###runPre
+### runPre
 Arguments: (@event_name:String, @passed_arguments:Array(optional), @usePromise:Boolean(optional))
 
 ```
 hooks.runPre('myFunction', ['Anna'], true);
 ```
 
-###runPost
+### runPost
 Arguments: (@event_name:String, @passed_arguments:Array(optional), @usePromise:Boolean(optional))
 
 ```
 hooks.runPost('myFunction');
 ```
 
-###mount
+### mount
 Arguments: (@event_name:String, @original_function:Array, @usePromise:Boolean(optional))
 
 ```
 myFunction = hooks.mount('myFunction', myFunction);
 ```
 
-###hookify
+### hookify
 Arguments: (@object:Object, @usePromise:Boolean(optional))
 
 ```
 hooks.hookify(myObject);
 ```
 
-##III. Examples
+## III. Examples
 
 ### 1) Hookify
 
