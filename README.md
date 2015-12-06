@@ -123,7 +123,7 @@ myFunction.post(function(args, meta){
 ## III. API - OBJECT
 
 ### pre
-Arguments: (@regex:String||RegExp, @posthook_callback:Function)
+Arguments: (@regex:String||RegExp, @prehook_callback:Function)
 
 ```
 myObject.pre('^get*$', function(args, meta) {
