@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var karma = require('karma');
+var karma = require('karma').Server;
 
 gulp.task('test', function (done) {
 	new karma({

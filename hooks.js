@@ -24,6 +24,11 @@ function hooks() {
 	 */
 	
 	self.mount = function (fn) {
+		/*
+		 * RETURN WITHOUT ANY CHANGE IF HOOKS ALREADY MOUNTED
+		 */
+		if (fn.hooks !== undefined)
+			return fn;
 		var usePromise;
 		if (arguments[1] !== undefined)
 			usePromise = arguments[1];
@@ -32,20 +37,20 @@ function hooks() {
 		/*
 		 * ASSIGN HOOK FUNCTIONS ON FUNCTION
 		 */
-		if (fn.hooks === undefined)
-			fn.hooks = {
-				name: fn.name,
-				pre: [],
-				post: [],
-			};
-		fn.pre = private._pre;
-		fn.post = private._post;
-		fn.countPre = private._countPre;
-		fn.countPost = private._countPost;
-		return function() {
+		var newFn = function() {
 			var args = arguments;
-			return private._run(this, fn, args, usePromise);
+			return private._run(this, newFn, fn, args, usePromise);
 		};
+		newFn.hooks = {
+			name: fn.hooksFnName || fn.name,
+			pre: [],
+			post: [],
+		};
+		newFn.pre = newFn.before = private._pre;
+		newFn.post = newFn.after = private._post;
+		newFn.countPre = newFn.countBefore = private._countPre;
+		newFn.countPost = newFn.countAfter = private._countPost;
+		return newFn;
 	};
 	
 	self.hookify = function (object) {
@@ -57,19 +62,15 @@ function hooks() {
 		/*
 		 * ASSIGN HOOK FUNCTIONS ON OBJECT
 		 */
-		object.pre = private._objPre;
-		object.post = private._objPre;
+		object.pre = object.before = private._objPre;
+		object.post = object.after = private._objPost;
 		/*
 		 * MOUNT HOOKS ON OBJECT FUNCTIONS
 		 */
 		_.each(object, function(fn, fnName){
-			if (typeof fn === 'function') {
-				fn.hooks = {
-					name: fnName,
-					pre: [],
-					post: [],
-				};
-				object[fnName] = self.mount(fn, usePromise);
+			if (typeof object[fnName] === 'function') {
+				object[fnName].hooksFnName = fnName;
+				object[fnName] = self.mount(object[fnName], usePromise);
 			}
 		});
 		return self;
@@ -189,26 +190,26 @@ function hooks() {
 		}
 	};
 	
-	private._run = function (context, fn) {
-		var args = arguments[1];
-		var usePromise = arguments[2];
+	private._run = function (context, parentFn, fn) {
+		var args = arguments[3];
+		var usePromise = arguments[4];
 		var result;
 		if (usePromise)
-			return private._runPre(fn, args, true)
+			return private._runPre(parentFn, args, true)
 					.then(function(){
 						result = fn.apply(context, args);
 						return result;
 					})
 					.then(function(){
-						return private._runPost(fn, args, true);
+						return private._runPost(parentFn, args, true);
 					})
 					.catch(function(err){
 						throw err;
 					});
 		else {
-			private._runPre(fn, args, false);
+			private._runPre(parentFn, args, false);
 			result = fn.apply(context, args);
-			private._runPost(fn, args, false);
+			private._runPost(parentFn, args, false);
 			return result;
 		}
 	};
