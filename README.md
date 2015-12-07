@@ -9,19 +9,16 @@ Hooks library provides full support for adding pre and post hooks to independent
 Use it like this:
 
 ```
+var hooks = require('hooks.js');
 
 // Hookify!
 hooks.hookify(myObject);
 
-...
-
 // set hook before function
-myObject.someFunction.pre(function(args, meta) {...});
+myObject.someFunction.before(function(args, meta) {...});
 
 // set hook after function
-myObject.someFunction.post(function(args, meta) {...});
-
-...
+myObject.someFunction.after(function(args, meta) {...});
 
 // now hooks are called before and after someFunction
 myObject.someFunction();
@@ -34,11 +31,11 @@ function myClass () {
 
   this._constructor = function() {
     hooks.hookify(this);
-    this.setName.pre(function(args, meta){
+    this.setName.before(function(args, meta){
       if (args[0].length < 5)
         throw new Error('Name is too short');
     });
-    this.getName.pre(function(args, meta){
+    this.getName.before(function(args, meta){
       if (this.name === undefined)
         throw new Error('Name is undefined');
     });
@@ -61,11 +58,11 @@ You can also hookify only matching functions:
 ```
 hooks.hookify(myObject);
 
-myObject.pre('^get*$', function(args, meta) {
+myObject.before('^get*$', function(args, meta) {
   console.log('Getter fired');
 });
 
-myObject.pre(new RegExp('^get*$'), function(args, meta) {
+myObject.before(new RegExp('^get*$'), function(args, meta) {
   var propertyName = meta.name.substr(3);
   propertyName[0] = propertyName[0].toLowerCase();
   if (this[propertyName] === undefined)
@@ -102,43 +99,52 @@ hooks.hookify(myObject);
 var myFunction = myObject.myFunction;
 ```
 
-### pre
+### pre/before
 Arguments: (@prehook_callback:Function)
 
 ```
 myFunction.pre(function(args, meta){
   // Something
 });
+myFunction.before(function(args, meta){
+  // Something
+});
 ```
 
-### post
+### post/after
 Arguments: (@posthook_callback:Function)
 
 ```
 myFunction.post(function(args, meta){
   // Something
 });
+myFunction.after(function(args, meta){
+  // Something
+});
 ```
 
 ## III. API - OBJECT
 
-### pre
+### pre/before
 Arguments: (@regex:String||RegExp, @prehook_callback:Function)
 
 ```
 myObject.pre('^get*$', function(args, meta) {
   // Something
 });
-myObject.pre(new RegExp('^get*$'), function(args, meta) {
+myObject.before(new RegExp('^get*$'), function(args, meta) {
   // Something
 });
 ```
 
-### post
+### post/after
 Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
-myObject.pre(new RegExp('^set*$'), function(args, meta) {
+myObject.post(new RegExp('^set*$'), function(args, meta) {
+  // Something
+});
+myObject.after(new RegExp('^set*$'), function(args, meta) {
   // Something
 });
 ```
