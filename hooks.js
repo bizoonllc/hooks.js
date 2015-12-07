@@ -48,6 +48,7 @@ function hooks() {
 		};
 		newFn.pre = newFn.before = private._pre;
 		newFn.post = newFn.after = private._post;
+		newFn.clean = private._clean;
 		newFn.countPre = newFn.countBefore = private._countPre;
 		newFn.countPost = newFn.countAfter = private._countPost;
 		return newFn;
@@ -86,11 +87,19 @@ function hooks() {
 	 */
 	
 	private._pre = function (hookFn) {
-		return private._setHook('pre', this, hookFn);
+		private._setHook('pre', this, hookFn);
+		return this;
 	};
 	
 	private._post = function (hookFn) {
-		return private._setHook('post', this, hookFn);
+		private._setHook('post', this, hookFn);
+		return this;
+	};
+	
+	private._clean = function () {
+		this.hooks.pre = [];
+		this.hooks.post = [];
+		return this;
 	};
 	
 	private._countPre = function () {

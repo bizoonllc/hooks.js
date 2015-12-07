@@ -110,6 +110,7 @@ Arguments: (@prehook_callback:Function)
 myFunction.pre(function(args, meta){
   // Something
 });
+// OR
 myFunction.before(function(args, meta){
   // Something
 });
@@ -122,9 +123,17 @@ Arguments: (@posthook_callback:Function)
 myFunction.post(function(args, meta){
   // Something
 });
+// OR
 myFunction.after(function(args, meta){
   // Something
 });
+```
+
+### clean
+Arguments: none
+
+```
+myFunction.clean();
 ```
 
 ## III. API - OBJECT
@@ -136,6 +145,7 @@ Arguments: (@regex:String||RegExp, @prehook_callback:Function)
 myObject.pre('^get*$', function(args, meta) {
   // Something
 });
+// OR
 myObject.before(new RegExp('^get*$'), function(args, meta) {
   // Something
 });
@@ -146,9 +156,6 @@ Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
 myObject.post(new RegExp('^set*$'), function(args, meta) {
-  // Something
-});
-myObject.after(new RegExp('^set*$'), function(args, meta) {
   // Something
 });
 ```
