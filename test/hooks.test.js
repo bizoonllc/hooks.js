@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 
-var hooks = require('../hooks');
+var hooks = require('../src/hooks');
 
 describe('hooks.js', function () {
 
@@ -116,6 +116,109 @@ describe('hooks.js', function () {
 		testFunction();
 		
 		expect(output).to.be.equal('before center after');
+	});
+
+	it('Expect output to be converted to upper case by post hook', function () {
+		var self = this;
+		
+		var testFunction = function () {
+			return 'Anna';
+		};
+		
+		testFunction = hooks.mount(testFunction);
+		
+		testFunction.post(function(args, meta, result){
+			return result.toUpperCase();
+		});
+		
+		var output = testFunction();
+		
+		expect(output).to.be.equal('ANNA');
+	});
+
+	it('Expect output to not to be overwritten by post hook if undefined returned', function () {
+		var self = this;
+		
+		var testFunction = function () {
+			return 'Anna';
+		};
+		
+		testFunction = hooks.mount(testFunction);
+		
+		testFunction.post(function(args, meta, result){
+			return undefined;
+		});
+		
+		var output = testFunction();
+		
+		expect(output).to.be.equal('Anna');
+	});
+
+	it('Expect output to be overwritten by post hook if null returned', function () {
+		var self = this;
+		
+		var testFunction = function () {
+			return 'Anna';
+		};
+		
+		testFunction = hooks.mount(testFunction);
+		
+		testFunction.post(function(args, meta, result){
+			return null;
+		});
+		
+		var output = testFunction();
+		
+		expect(output).to.be.equal(null);
+	});
+
+	it('Expect output to be correctly overwritten by post hooks where some of them modify output and some of them don\'t', function () {
+		var self = this;
+		
+		var testFunction = function () {
+			return 'Anna';
+		};
+		
+		testFunction = hooks.mount(testFunction);
+		
+		testFunction.post(function(args, meta, result){
+			return '@' + result;
+		});
+		
+		testFunction.post(function(args, meta, result){
+			return undefined;
+		});
+		
+		testFunction.post(function(args, meta, result){
+			return result.toUpperCase();
+		});
+		
+		testFunction.post(function(args, meta, result){
+		});
+		
+		var output = testFunction();
+		
+		expect(output).to.be.equal('@ANNA');
+	});
+
+	it('Expect output to not be modified by hooks after clean function was called', function () {
+		var self = this;
+		
+		var testFunction = function () {
+			return 'Anna';
+		};
+		
+		testFunction = hooks.mount(testFunction);
+		
+		testFunction.post(function(args, meta, result){
+			return result.toUpperCase();
+		});
+		
+		testFunction.clean();
+		
+		var output = testFunction();
+		
+		expect(output).to.be.equal('Anna');
 	});
 
 });

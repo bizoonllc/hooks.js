@@ -4,7 +4,9 @@
   "description": "Library to mount hooks to functions",
   "license": "MIT",
   "main": "src/hooks.js",
-  "scripts": {},
+  "scripts": {
+	  "test": "gulp test"
+  },
   "author": "Bizoon LLC",
   "repository": {
     "type": "git",
