@@ -3,7 +3,7 @@
   "version": "0.2.16",
   "description": "Library to mount hooks to functions",
   "license": "MIT",
-  "main": "hooks.js",
+  "main": "src/hooks.js",
   "scripts": {},
   "author": "Bizoon LLC",
   "repository": {

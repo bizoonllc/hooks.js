@@ -57,7 +57,7 @@ function myClass () {
 }
 ```
 
-You can also hookify only matching functions:
+You can also add hooks in batch on only matching functions:
 
 ```
 hooks.hookify(myObject);
@@ -103,7 +103,8 @@ hooks.hookify(myObject);
 var myFunction = myObject.myFunction;
 ```
 
-### pre/before
+### pre
+### before
 Arguments: (@prehook_callback:Function)
 
 ```
@@ -116,7 +117,8 @@ myFunction.before(function(args, meta){
 });
 ```
 
-### post/after
+### post
+### after
 Arguments: (@posthook_callback:Function)
 
 ```
@@ -138,7 +140,8 @@ myFunction.clean();
 
 ## III. API - OBJECT
 
-### pre/before
+### pre
+### before
 Arguments: (@regex:String||RegExp, @prehook_callback:Function)
 
 ```
@@ -151,7 +154,8 @@ myObject.before(new RegExp('^get*$'), function(args, meta) {
 });
 ```
 
-### post/after
+### post
+### after
 Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
