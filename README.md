@@ -3,6 +3,7 @@
 [![License MIT][license]](http://opensource.org/licenses/MIT)
 [![NPM version][npm-image]][npm-url]
 [![Downloads][downloads-image]][npm-url]
+[![Dependencies](https://david-dm.org/bizoonllc/hooks.js.svg)](https://david-dm.org/bizoonllc/hooks.js)
 
 Hooks library provides full support for adding pre and post hooks to independent functions and functions in objects.
 
