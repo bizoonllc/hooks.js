@@ -40,6 +40,9 @@ function myClass () {
       if (args[0].length < 5)
         throw new Error('Name is too short');
     });
+    this.setName.after(function(args, meta, result){
+      return result.toUpperCase();
+    });
     this.getName.before(function(args, meta){
       if (this.name === undefined)
         throw new Error('Name is undefined');
@@ -123,11 +126,11 @@ myFunction.before(function(args, meta){
 Arguments: (@posthook_callback:Function)
 
 ```
-myFunction.post(function(args, meta){
+myFunction.post(function(args, meta, result){
   // Something
 });
 // OR
-myFunction.after(function(args, meta){
+myFunction.after(function(args, meta, result){
   // Something
 });
 ```
@@ -160,7 +163,7 @@ myObject.before(new RegExp('^get*$'), function(args, meta) {
 Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
-myObject.post(new RegExp('^set*$'), function(args, meta) {
+myObject.post(new RegExp('^set*$'), function(args, meta, result) {
   // Something
 });
 ```

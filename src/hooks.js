@@ -151,27 +151,33 @@ function hooks() {
 	};
 	
 	private._runPre = function (fn, args, usePromise) {
-		return private._runHook('pre', fn, args, usePromise);
+		return private._runHook('pre', fn, args, undefined, usePromise);
 	};
 	
-	private._runPost = function (fn, args, usePromise) {
-		return private._runHook('post', fn, args, usePromise);
+	private._runPost = function (fn, args, result, usePromise) {
+		return private._runHook('post', fn, args, result, usePromise);
 	};
 	
-	private._runHook = function (type, fn, args, usePromise) {
+	private._runHook = function (type, fn, args, result, usePromise) {
 		if (usePromise) {
-			var batch = [];
+			var promise = Promise.resolve(result);
 			_.each(fn.hooks[type], function (hookFn, $index){
-				batch.push(function(){
-					return hookFn(args, fn.hooks);
+				promise.then(function(output){
+					if (output !== undefined)
+						result = output;
+					if (type === 'post')
+						return hookFn(args, fn.hooks, result);
+					else
+						return hookFn(args, fn.hooks);
 				});
 			})
 			if (private.log && window.console)
 				console.info('hooks: ' + fn.name + ' function ' + type + '-hook fired.');
-			return Promise.all(batch)
+			return promise
 					.then(function(){
 						if (private.log && window.console)
 							console.info('hooks: ' + fn.name + ' function ' + type + '-hook finished.')
+						return result;
 					})
 					.catch(function(err){
 						if (window.console) {
@@ -185,10 +191,16 @@ function hooks() {
 				if (private.log && window.console)
 					console.info('hooks: ' + fn.name + ' ' + type + '-hook (no promise) fired.');
 				_.each(fn.hooks[type], function (hookFn, $index){
-					hookFn(args, fn.hooks);
+					if (type === 'post') {
+						var output = hookFn(args, fn.hooks, result);
+						if (output !== undefined)
+							result = output;
+					} else
+						hookFn(args, fn.hooks);
 				});
 				if (private.log && window.console)
 					console.info('hooks: ' + fn.name + ' function ' + type + '-hook (no promise) finished.');
+				return result;
 			} catch (err) {
 				if (window.console) {
 					console.warn('hooks exception: ' + fn.name + ' function ' + type + '-hook (no promise) failed: ' + ((typeof err === 'object' && err !== null && err.message) || 'uknown error'))
@@ -210,7 +222,13 @@ function hooks() {
 						return result;
 					})
 					.then(function(){
-						return private._runPost(parentFn, args, true);
+						return private._runPost(parentFn, args, result, true);
+					})
+					.then(function(output){
+						if (output === undefined)
+							return result;
+						else
+							return output;
 					})
 					.catch(function(err){
 						throw err;
@@ -218,8 +236,11 @@ function hooks() {
 		else {
 			private._runPre(parentFn, args, false);
 			result = fn.apply(context, args);
-			private._runPost(parentFn, args, false);
-			return result;
+			var output = private._runPost(parentFn, args, result, false);
+			if (output === undefined)
+				return result;
+			else
+				return output;
 		}
 	};
 
