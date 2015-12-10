@@ -136,7 +136,7 @@ describe('hooks.js', function () {
 		expect(output).to.be.equal('ANNA');
 	});
 
-	it('Expect output to not to be overwritten by post hook if undefined returned', function () {
+	it('Expect output to not be overwritten by post hook if undefined returned', function () {
 		var self = this;
 		
 		var testFunction = function () {
