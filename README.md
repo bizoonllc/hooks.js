@@ -23,7 +23,7 @@ hooks.hookify(myObject);
 myObject.someFunction.before(function(args, meta) {...});
 
 // set hook after function
-myObject.someFunction.after(function(args, meta) {...});
+myObject.someFunction.after(function(args, meta, result) {...});
 
 // now hooks are called before and after someFunction
 myObject.someFunction();
@@ -197,7 +197,7 @@ hooks.hookify(myClassObj);
 myCustomObject.myFunction.pre(function(args, meta) {
   console.log('Do sth before');
 });
-myCustomObject.myOtherFunction.post(function(args, meta) {
+myCustomObject.myOtherFunction.post(function(args, meta, result) {
   console.log('Do sth after');
 });
 
