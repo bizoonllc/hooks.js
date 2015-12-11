@@ -1,11 +1,11 @@
 {
   "name": "hooks.js",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "description": "Library to mount hooks to functions",
   "license": "MIT",
   "main": "src/hooks.js",
   "scripts": {
-	  "test": "gulp test"
+    "test": "gulp test"
   },
   "author": "Bizoon LLC",
   "repository": {
