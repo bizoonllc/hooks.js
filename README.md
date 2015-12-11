@@ -66,11 +66,11 @@ You can also add hooks in batch on only matching functions:
 ```
 hooks.hookify(myObject);
 
-myObject.before('^get*$', function(args, meta) {
+myObject.before('^get(.*?)$', function(args, meta) {
   console.log('Getter fired');
 });
 
-myObject.before(new RegExp('^get*$'), function(args, meta) {
+myObject.before(new RegExp('^get(.*?)$'), function(args, meta) {
   var propertyName = meta.name.substr(3);
   propertyName[0] = propertyName[0].toLowerCase();
   if (this[propertyName] === undefined)
@@ -149,11 +149,11 @@ myFunction.clean();
 Arguments: (@regex:String||RegExp, @prehook_callback:Function)
 
 ```
-myObject.pre('^get*$', function(args, meta) {
+myObject.pre('^get(.*?)$', function(args, meta) {
   // Something
 });
 // OR
-myObject.before(new RegExp('^get*$'), function(args, meta) {
+myObject.before(new RegExp('^get(.*?)$'), function(args, meta) {
   // Something
 });
 ```
@@ -163,7 +163,7 @@ myObject.before(new RegExp('^get*$'), function(args, meta) {
 Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
-myObject.post(new RegExp('^set*$'), function(args, meta, result) {
+myObject.post(new RegExp('^set(.*?)$'), function(args, meta, result) {
   // Something
 });
 ```

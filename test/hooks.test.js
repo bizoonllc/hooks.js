@@ -221,4 +221,79 @@ describe('hooks.js', function () {
 		expect(output).to.be.equal('Anna');
 	});
 
+	it('Expect input to be modified by hooks', function () {
+		var self = this;
+		
+		var testFunction = function (name) {
+			return name;
+		};
+		
+		testFunction = hooks.mount(testFunction);
+		
+		testFunction.pre(function(args, meta){
+			args[0] = args[0].toUpperCase();
+		});
+		
+		expect(testFunction('Anna')).to.be.equal('ANNA');
+	});
+
+	it('Expect meta name to be the name of the function', function () {
+		var self = this;
+		
+		var nameOfTheFunction = undefined;
+		
+		function testFunction () {
+			return 'Anna';
+		};
+		
+		testFunction = hooks.mount(testFunction);
+		
+		testFunction.pre(function(args, meta){
+			nameOfTheFunction = meta.name;
+		});
+		
+		testFunction();
+		
+		expect(nameOfTheFunction).to.be.equal('testFunction');
+	});
+
+	it('Expect hits to be called 2 times on regex hook', function () {
+		var self = this;
+		
+		var testObject = {
+			name: 'Anna',
+			surname: 'Smith',
+			getName: function() {
+				return this.name;
+			},
+			getSurname: function() {
+				return this.surname;
+			},
+			setName: function(name) {
+				this.name = name;
+				return this;
+			},
+			setSurname: function(surname) {
+				this.surname = surname;
+				return this;
+			},
+		};
+		
+		hooks.hookify(testObject);
+		
+		var hits = 0;
+		
+		testObject.pre('^get(.*?)$', function(args, meta){
+			hits++;
+			console.log(meta);
+		})
+		
+		testObject.getName();
+		testObject.getSurname();
+		testObject.setName('Anna');
+		testObject.setSurname('Smith');
+		
+		expect(hits).to.be.equal(2);
+	});
+
 });
