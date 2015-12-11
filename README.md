@@ -1,6 +1,6 @@
 
 # hooks.js
-[![License MIT][license]](http://opensource.org/licenses/MIT)
+[![License MIT][license]](https://opensource.org/licenses/MIT)
 [![NPM version][npm-image]][npm-url]
 [![Downloads][downloads-image]][npm-url]
 [![Dependencies](https://david-dm.org/bizoonllc/hooks.js.svg)](https://david-dm.org/bizoonllc/hooks.js)
@@ -243,7 +243,7 @@ MIT
 
 
 [npm-url]: https://npmjs.org/package/hooks.js
-[npm-image]: http://img.shields.io/npm/v/hooks.js.svg
+[npm-image]: https://img.shields.io/npm/v/hooks.js.svg
 [license]: https://img.shields.io/npm/l/hooks.js.svg
-[downloads-image]: http://img.shields.io/npm/dm/hooks.js.svg
+[downloads-image]: https://img.shields.io/npm/dm/hooks.js.svg
 
