@@ -1,6 +1,6 @@
 var hooks = require('./hooks');
 
-var myFunction = function(name) {
+function myFunction (name) {
 	return 'Hello ' + name + '!';
 };
 
@@ -23,7 +23,7 @@ myFunction.pre('myFunction', function(args, meta) {
 });
 
 // log information
-myFunction.post('myFunction', function(args, meta) {
+myFunction.post('myFunction', function(args, meta, result) {
 	console.log('myFunction fired with "' + args[0] + '" name.');
 });
 

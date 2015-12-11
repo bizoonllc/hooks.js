@@ -78,6 +78,8 @@ myObject.before(new RegExp('^get(.*?)$'), function(args, meta) {
 });
 ```
 
+To see logs of hooks actions in console, you can call `hooks.setLog(true);`.
+
 ## II. API - ASSIGN
 
 ### mount

@@ -134,10 +134,15 @@ function hooks() {
 			regexObject = regexInput;
 		else
 			regexObject = new RegExp(regexInput);
+		var countMatching = 0;
 		_.each(object, function(fn, fnName){
-			if ((regexInput === undefined || fnName.match(regexObject)) && typeof fn === 'function')
+			if ((regexInput === undefined || fnName.match(regexObject)) && typeof fn === 'function') {
 				private._setHook(type, fn, hookFn);
+				countMatching++;
+			}
 		});
+		if (private.log && window.console)
+			console.info('hooks: ' + regexObject.toString() + ' regex matched ' + countMatching + ' functions.');
 		return self;
 	};
 	
@@ -189,7 +194,7 @@ function hooks() {
 		} else {
 			try {
 				if (private.log && window.console)
-					console.info('hooks: ' + fn.name + ' ' + type + '-hook (no promise) fired.');
+					console.info('hooks: ' + fn.name + ' ' + type + '-hook (no promise version) fired.');
 				_.each(fn.hooks[type], function (hookFn, $index){
 					if (type === 'post') {
 						var output = hookFn(args, fn.hooks, result);
@@ -199,11 +204,11 @@ function hooks() {
 						hookFn(args, fn.hooks);
 				});
 				if (private.log && window.console)
-					console.info('hooks: ' + fn.name + ' function ' + type + '-hook (no promise) finished.');
+					console.info('hooks: ' + fn.name + ' function ' + type + '-hook (no promise version) finished.');
 				return result;
 			} catch (err) {
 				if (window.console) {
-					console.warn('hooks exception: ' + fn.name + ' function ' + type + '-hook (no promise) failed: ' + ((typeof err === 'object' && err !== null && err.message) || 'uknown error'))
+					console.warn('hooks exception: ' + fn.name + ' function ' + type + '-hook (no promise version) failed: ' + ((typeof err === 'object' && err !== null && err.message) || 'uknown error'))
 					console.error(err);
 				}
 				throw err;
