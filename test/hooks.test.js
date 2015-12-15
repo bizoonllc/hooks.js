@@ -49,10 +49,10 @@ describe('hooks.js', function () {
 			
 			testFunction = hooks.mount(testFunction);
 			
-			testFunction.pre(function(){});
-			testFunction.post(function(){});
-			testFunction.before(function(){});
-			testFunction.after(function(){});
+			testFunction.hooks.pre(function(){});
+			testFunction.hooks.post(function(){});
+			testFunction.hooks.before(function(){});
+			testFunction.hooks.after(function(){});
 		};
 		
 		expect(fn).to.not.throw(Error);
@@ -71,10 +71,10 @@ describe('hooks.js', function () {
 			
 			hooks.hookify(testObject);
 			
-			testObject.pre('(.*)', function(){});
-			testObject.post('(.*)', function(){});
-			testObject.before('(.*)', function(){});
-			testObject.after('(.*)', function(){});
+			testObject.hooks.pre('(.*)', function(){});
+			testObject.hooks.post('(.*)', function(){});
+			testObject.hooks.before('(.*)', function(){});
+			testObject.hooks.after('(.*)', function(){});
 		};
 		
 		expect(fn).to.not.throw(Error);
@@ -88,10 +88,10 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		expect(testFunction.pre).to.be.a('function');
-		expect(testFunction.post).to.be.a('function');
-		expect(testFunction.before).to.be.a('function');
-		expect(testFunction.after).to.be.a('function');
+		expect(testFunction.hooks.pre).to.be.a('function');
+		expect(testFunction.hooks.post).to.be.a('function');
+		expect(testFunction.hooks.before).to.be.a('function');
+		expect(testFunction.hooks.after).to.be.a('function');
 	});
 
 	it('Expect output to be sum of pre, basic and post function', function () {
@@ -105,11 +105,11 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		testFunction.pre(function(){
+		testFunction.hooks.pre(function(){
 			output += 'before';
 		});
 		
-		testFunction.post(function(){
+		testFunction.hooks.post(function(){
 			output += 'after';
 		});
 		
@@ -127,7 +127,7 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		testFunction.post(function(args, meta, result){
+		testFunction.hooks.post(function(args, meta, result){
 			return result.toUpperCase();
 		});
 		
@@ -145,7 +145,7 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		testFunction.post(function(args, meta, result){
+		testFunction.hooks.post(function(args, meta, result){
 			return undefined;
 		});
 		
@@ -163,7 +163,7 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		testFunction.post(function(args, meta, result){
+		testFunction.hooks.post(function(args, meta, result){
 			return null;
 		});
 		
@@ -181,19 +181,19 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		testFunction.post(function(args, meta, result){
+		testFunction.hooks.post(function(args, meta, result){
 			return '@' + result;
 		});
 		
-		testFunction.post(function(args, meta, result){
+		testFunction.hooks.post(function(args, meta, result){
 			return undefined;
 		});
 		
-		testFunction.post(function(args, meta, result){
+		testFunction.hooks.post(function(args, meta, result){
 			return result.toUpperCase();
 		});
 		
-		testFunction.post(function(args, meta, result){
+		testFunction.hooks.post(function(args, meta, result){
 		});
 		
 		var output = testFunction();
@@ -210,11 +210,11 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		testFunction.post(function(args, meta, result){
+		testFunction.hooks.post(function(args, meta, result){
 			return result.toUpperCase();
 		});
 		
-		testFunction.clean();
+		testFunction.hooks.clean();
 		
 		var output = testFunction();
 		
@@ -230,7 +230,7 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		testFunction.pre(function(args, meta){
+		testFunction.hooks.pre(function(args, meta){
 			args[0] = args[0].toUpperCase();
 		});
 		
@@ -248,7 +248,7 @@ describe('hooks.js', function () {
 		
 		testFunction = hooks.mount(testFunction);
 		
-		testFunction.pre(function(args, meta){
+		testFunction.hooks.pre(function(args, meta){
 			nameOfTheFunction = meta.name;
 		});
 		
@@ -283,10 +283,9 @@ describe('hooks.js', function () {
 		
 		var hits = 0;
 		
-		testObject.pre('^get(.*?)$', function(args, meta){
+		testObject.hooks.pre('^get(.*?)$', function(args, meta){
 			hits++;
-			console.log(meta);
-		})
+		});
 		
 		testObject.getName();
 		testObject.getSurname();
@@ -294,6 +293,114 @@ describe('hooks.js', function () {
 		testObject.setSurname('Smith');
 		
 		expect(hits).to.be.equal(2);
+	});
+
+	it('Expect hits to be called 2 times on $getters', function () {
+		var self = this;
+		
+		var testObject = {
+			name: 'Anna',
+			surname: 'Smith',
+			getName: function() {
+				return this.name;
+			},
+			getSurname: function() {
+				return this.surname;
+			},
+			setName: function(name) {
+				this.name = name;
+				return this;
+			},
+			setSurname: function(surname) {
+				this.surname = surname;
+				return this;
+			},
+		};
+		
+		hooks.hookify(testObject);
+		
+		var hits = 0;
+		
+		testObject.hooks.$getters.pre(function(args, meta){
+			hits++;
+		});
+		
+		testObject.getName();
+		testObject.getSurname();
+		testObject.setName('Anna');
+		testObject.setSurname('Smith');
+		
+		expect(hits).to.be.equal(2);
+	});
+
+	it('Expect only getters to be hookified when called hookify with regex second argument', function () {
+		var self = this;
+		
+		var testObject = {
+			getName: function() {
+			},
+			getSurname: function() {
+			},
+			setName: function(name) {
+			},
+			setSurname: function(surname) {
+			},
+		};
+		
+		hooks.hookify(testObject, '^get(.*?)$');
+		
+		expect(testObject.getName.hooks).to.be.an('object');
+		expect(testObject.getSurname.hooks).to.be.an('object');
+		expect(testObject.setName.hooks).to.be.an('undefined');
+		expect(testObject.setSurname.hooks).to.be.an('undefined');
+	});
+
+	it('Expect only getters to be hookified when called hookify with "getters" second argument', function () {
+		var self = this;
+		
+		var testObject = {
+			getName: function() {
+			},
+			getSurname: function() {
+			},
+			setName: function(name) {
+			},
+			setSurname: function(surname) {
+			},
+		};
+		
+		hooks.hookify(testObject, 'getters');
+		
+		expect(testObject.getName.hooks).to.be.an('object');
+		expect(testObject.getSurname.hooks).to.be.an('object');
+		expect(testObject.setName.hooks).to.be.an('undefined');
+		expect(testObject.setSurname.hooks).to.be.an('undefined');
+	});
+
+	it('Expect meta property to be set correctly on getters and setters', function () {
+		var self = this;
+		
+		var testObject = {
+			getName: function() {
+			},
+			getSurname: function() {
+			},
+			setName: function(name) {
+			},
+			setSurname: function(surname) {
+			},
+		};
+		
+		hooks.hookify(testObject);
+		
+		testObject.hooks.post('(.*?)', function(args, meta, result){
+			return meta.property;
+		});
+		
+		expect(testObject.getName()).to.be.equal('name');
+		expect(testObject.getSurname()).to.be.equal('surname');
+		expect(testObject.setName()).to.be.equal('name');
+		expect(testObject.setSurname()).to.be.equal('surname');
 	});
 
 });

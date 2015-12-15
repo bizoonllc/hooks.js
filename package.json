@@ -18,7 +18,10 @@
     "post hooks",
     "server",
     "client",
-    "browser"
+    "browser",
+	"hook",
+	"validation",
+	"batch"
   ],
   "dependencies": {
     "bluebird": "^3.0.6",
