@@ -173,6 +173,14 @@ myObject.hooks.pre('^get(.*?)$', function(args, meta) {
 myObject.hooks.before(new RegExp('^get(.*?)$'), function(args, meta) {
   // Something
 });
+// OR
+myObject.hooks.$getters.before(function(args, meta) {
+  // Something
+});
+// OR
+myObject.hooks.$setters.before(function(args, meta) {
+  // Something
+});
 ```
 
 ### post
