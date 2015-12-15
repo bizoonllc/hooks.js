@@ -93,10 +93,22 @@ myFunction = hooks.mount(myFunction);
 ```
 
 ### hookify
-Arguments: (@object:Object, @usePromise:Boolean(optional))
+Arguments: (@object:Object, @regex:String||RegExp(optional), @usePromise:Boolean(optional))
 
 ```
 hooks.hookify(myObject);
+```
+
+or
+
+```
+hooks.hookify(myObject, 'getters');
+```
+
+or
+
+```
+hooks.hookify(myObject, '^get(.*?)$');
 ```
 
 ## II. API - FUNCTION
