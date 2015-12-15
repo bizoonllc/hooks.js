@@ -1,7 +1,8 @@
 var _ = require('underscore');
 var Promise = require('bluebird');
 Promise.longStackTraces();
-var hooksException = require('./hooksException');
+var exceptionFactory = require('exception-factory');
+var hooksException = new exceptionFactory('hooksException', 'hooks exception: ');
 
 function hooks() {
 	
