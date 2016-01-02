@@ -333,6 +333,42 @@ describe('hooks.js', function () {
 		expect(hits).to.be.equal(2);
 	});
 
+	it('Expect hooks to access properties of original hookified object', function () {
+		var self = this;
+		
+		var testObject = {
+			name: 'Anna',
+			surname: 'Smith',
+			getName: function() {
+				return this.name;
+			},
+			getSurname: function() {
+				return this.surname;
+			},
+			setName: function(name) {
+				this.name = name;
+				return this;
+			},
+			setSurname: function(surname) {
+				this.surname = surname;
+				return this;
+			},
+		};
+		
+		hooks.hookify(testObject);
+		
+		testObject.getName.hooks.pre(function(args, meta){
+			expect(this.name).to.be.equal('Anna');
+		});
+		
+		testObject.setSurname.hooks.post(function(args, meta){
+			expect(this.surname).to.be.equal('Johnson');
+		});
+		
+		testObject.getName();
+		testObject.setSurname('Johnson');
+	});
+
 	it('Expect only getters to be hookified when called hookify with regex second argument', function () {
 		var self = this;
 		

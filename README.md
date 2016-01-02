@@ -86,7 +86,7 @@ To see logs of hooks actions in console, you can call `hooks.setLog(true);`.
 ## II. API - ASSIGN
 
 ### mount
-Arguments: (@original_function:Array, @usePromise:Boolean(optional))
+Arguments: (@original_function:Array, @usePromise:Boolean(optional), @context:Object(optional))
 
 ```
 myFunction = hooks.mount(myFunction);

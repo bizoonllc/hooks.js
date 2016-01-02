@@ -28,17 +28,20 @@ function hooks() {
 		 */
 		if (fn.hooks !== undefined)
 			return fn;
-		var usePromise;
-		if (arguments[1] !== undefined)
-			usePromise = arguments[1];
-		else
-			usePromise = private.defaultUsePromise;
+		/*
+		 * USE PROMISE
+		 */
+		var usePromise = arguments[1] !== undefined ? arguments[1] : private.defaultUsePromise;
+		/*
+		 * CONTEXT
+		 */
+		var context = arguments[2] ? arguments[2] : fn;
 		/*
 		 * ASSIGN HOOK FUNCTIONS ON FUNCTION
 		 */
 		var newFn = function() {
 			var args = arguments;
-			return private._run(this, newFn, fn, args, usePromise);
+			return private._run(context, newFn, fn, args, usePromise);
 		};
 		newFn.hooks = {};
 		newFn.hooks.$data = {
@@ -115,7 +118,7 @@ function hooks() {
 		_.each(object, function(fn, fnName){
 			if (typeof object[fnName] === 'function' && (regexObject === undefined || fnName.match(regexObject))) {
 				object[fnName].$hooksFnName = fnName;
-				object[fnName] = self.mount(object[fnName], usePromise);
+				object[fnName] = self.mount(object[fnName], usePromise, object);
 			}
 		});
 		return self;
@@ -221,15 +224,15 @@ function hooks() {
 		return self;
 	};
 	
-	private._runPre = function (fn, args, usePromise) {
-		return private._runHook('pre', fn, args, undefined, usePromise);
+	private._runPre = function (context, fn, args, usePromise) {
+		return private._runHook('pre', context, fn, args, undefined, usePromise);
 	};
 	
-	private._runPost = function (fn, args, result, usePromise) {
-		return private._runHook('post', fn, args, result, usePromise);
+	private._runPost = function (context, fn, args, result, usePromise) {
+		return private._runHook('post', context, fn, args, result, usePromise);
 	};
 	
-	private._runHook = function (type, fn, args, result, usePromise) {
+	private._runHook = function (type, context, fn, args, result, usePromise) {
 		var meta = fn.hooks.$data;
 		if (usePromise) {
 			var promise = Promise.resolve(result);
@@ -238,9 +241,9 @@ function hooks() {
 					if (output !== undefined)
 						result = output;
 					if (type === 'post')
-						return hookFn(args, meta, result);
+						return hookFn.apply(context, [args, meta, result]);
 					else
-						return hookFn(args, meta);
+						return hookFn.apply(context, [args, meta]);
 				});
 			})
 			if (private.log && window.console)
@@ -264,11 +267,11 @@ function hooks() {
 					console.info('hooks: ' + fn.name + ' ' + type + '-hook (no promise version) fired.');
 				_.each(meta[type], function (hookFn, $index){
 					if (type === 'post') {
-						var output = hookFn(args, meta, result);
+						var output = hookFn.apply(context, [args, meta, result]);
 						if (output !== undefined)
 							result = output;
 					} else
-						hookFn(args, meta);
+						hookFn.apply(context, [args, meta]);
 				});
 				if (private.log && window.console)
 					console.info('hooks: ' + fn.name + ' function ' + type + '-hook (no promise version) finished.');
@@ -288,13 +291,13 @@ function hooks() {
 		var usePromise = arguments[4];
 		var result;
 		if (usePromise)
-			return private._runPre(parentFn, args, true)
+			return private._runPre(context, parentFn, args, true)
 					.then(function(){
 						result = fn.apply(context, args);
 						return result;
 					})
 					.then(function(){
-						return private._runPost(parentFn, args, result, true);
+						return private._runPost(context, parentFn, args, result, true);
 					})
 					.then(function(output){
 						if (output === undefined)
@@ -306,9 +309,9 @@ function hooks() {
 						throw err;
 					});
 		else {
-			private._runPre(parentFn, args, false);
+			private._runPre(context, parentFn, args, false);
 			result = fn.apply(context, args);
-			var output = private._runPost(parentFn, args, result, false);
+			var output = private._runPost(context, parentFn, args, result, false);
 			if (output === undefined)
 				return result;
 			else
