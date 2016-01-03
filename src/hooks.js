@@ -5,24 +5,24 @@ var exceptionFactory = require('exception-factory');
 var hooksException = new exceptionFactory('hooksException', 'hooks exception: ');
 
 function hooks() {
-	
-	var self = this;
-	
+
+	var $this = this, public = this;
+
 	var private = {
 		supportedTypes: ['pre', 'post'],
 		plugins: [],
 		defaultUsePromise: false,
 		log: false,
 	};
-	
+
 	private.__constructor = function () {
 	};
-	
+
 	/*
 	 * PUBLIC MAIN METHODS
 	 */
-	
-	self.mount = function (fn) {
+
+	public.mount = function (fn) {
 		/*
 		 * RETURN WITHOUT ANY CHANGE IF HOOKS ALREADY MOUNTED
 		 */
@@ -39,7 +39,7 @@ function hooks() {
 		/*
 		 * ASSIGN HOOK FUNCTIONS ON FUNCTION
 		 */
-		var newFn = function() {
+		var newFn = function () {
 			var args = arguments;
 			return private._run(context, newFn, fn, args, usePromise);
 		};
@@ -50,9 +50,9 @@ function hooks() {
 			post: [],
 			property: undefined,
 		};
-		if (newFn.hooks.$data.name.substr(0,3) === 'get' || newFn.hooks.$data.name.substr(0,3) === 'set') {
+		if (newFn.hooks.$data.name.substr(0, 3) === 'get' || newFn.hooks.$data.name.substr(0, 3) === 'set') {
 			var property = newFn.hooks.$data.name.substr(3);
-			property = property.substr(0,1).toLowerCase() + property.substr(1);
+			property = property.substr(0, 1).toLowerCase() + property.substr(1);
 			newFn.hooks.$data.property = property;
 		}
 		newFn.hooks.$fn = newFn;
@@ -63,8 +63,8 @@ function hooks() {
 		newFn.hooks.countPost = newFn.hooks.countrAfter = private._countPost;
 		return newFn;
 	};
-	
-	self.hookify = function (object) {
+
+	public.hookify = function (object) {
 		/*
 		 * REGEXP
 		 */
@@ -100,40 +100,40 @@ function hooks() {
 		object.hooks.$obj = object;
 		object.hooks.pre = object.hooks.before = private._objPre;
 		object.hooks.post = object.hooks.after = private._objPost;
-		object.hooks.$getters.pre = object.hooks.$getters.before = function(hookFn){
+		object.hooks.$getters.pre = object.hooks.$getters.before = function (hookFn) {
 			return private._objPre.apply(object.hooks, ['getters', hookFn]);
 		};
-		object.hooks.$setters.pre = object.hooks.$setters.before = function(hookFn){
+		object.hooks.$setters.pre = object.hooks.$setters.before = function (hookFn) {
 			return private._objPre.apply(object.hooks, ['setters', hookFn]);
 		};
-		object.hooks.$getters.post = object.hooks.$getters.after = function(hookFn){
+		object.hooks.$getters.post = object.hooks.$getters.after = function (hookFn) {
 			return private._objPost.apply(object.hooks, ['getters', hookFn]);
 		};
-		object.hooks.$setters.post = object.hooks.$setters.after = function(hookFn){
+		object.hooks.$setters.post = object.hooks.$setters.after = function (hookFn) {
 			return private._objPost.apply(object.hooks, ['setters', hookFn]);
 		};
 		/*
 		 * MOUNT HOOKS ON OBJECT FUNCTIONS
 		 */
-		_.each(object, function(fn, fnName){
+		_.each(object, function (fn, fnName) {
 			if (typeof object[fnName] === 'function' && (regexObject === undefined || fnName.match(regexObject))) {
 				object[fnName].$hooksFnName = fnName;
-				object[fnName] = self.mount(object[fnName], usePromise, object);
+				object[fnName] = $this.mount(object[fnName], usePromise, object);
 			}
 		});
-		return self;
+		return $this;
 	};
-	
-	self.plugin = function (plugin) {
+
+	public.plugin = function (plugin) {
 		//under development
 		var plugin
 		private.plugins.push(plugin);
 		private._objPre[pluginName] = plugin;
 		private._objPost[pluginName] = plugin;
-		return self;
+		return $this;
 	};
-	
-	self.createPlugin = function (name, methods) {
+
+	public.createPlugin = function (name, methods) {
 		//under development
 		var plugin = {
 			name: name,
@@ -141,57 +141,57 @@ function hooks() {
 		};
 		return plugin;
 	};
-	
-	self.setLog = function (log) {
+
+	public.setLog = function (log) {
 		private.log = Boolean(log);
-		return self;
+		return $this;
 	};
-	
+
 	/*
 	 * PRIVATE MOUNTED FUNCTION METHODS
 	 */
-	
+
 	private._pre = function (hookFn) {
 		private._setHook('pre', this.$fn, hookFn);
 		return this;
 	};
-	
+
 	private._post = function (hookFn) {
 		private._setHook('post', this.$fn, hookFn);
 		return this;
 	};
-	
+
 	private._clean = function () {
 		this.$data.pre = [];
 		this.$data.post = [];
 		return this;
 	};
-	
+
 	private._countPre = function () {
 		return _.size(this.hooks.pre);
 	};
-	
+
 	private._countPost = function () {
 		return _.size(this.hooks.post);
 	};
-	
+
 	/*
 	 * PRIVATE MOUNTED OBJECT METHODS
 	 */
-	
+
 	private._objPre = function (regexInput, hookFn) {
 		return private._setRegexHooks('pre', this.$obj, regexInput, hookFn);
 	};
-	
+
 	private._objPost = function (regexInput, hookFn) {
 		return private._setRegexHooks('post', this.$obj, regexInput, hookFn);
 	};
-	
+
 	/*
 	 * PRIVATE INTERNAL METHODS
 	 */
-	
-	private._setRegexHooks = function(type, object, regexInput, hookFn) {
+
+	private._setRegexHooks = function (type, object, regexInput, hookFn) {
 		if (typeof regexInput !== 'string' && !(regexInput instanceof RegExp))
 			throw new hooksException('passed regex is not a string or instance of RegExp object');
 		var regexObject;
@@ -204,7 +204,7 @@ function hooks() {
 		else
 			regexObject = new RegExp(regexInput);
 		var countMatching = 0;
-		_.each(object, function(fn, fnName){
+		_.each(object, function (fn, fnName) {
 			if ((regexInput === undefined || fnName.match(regexObject)) && typeof fn === 'function' && fn.hooks !== undefined) {
 				private._setHook(type, fn, hookFn);
 				countMatching++;
@@ -212,32 +212,32 @@ function hooks() {
 		});
 		if (private.log && window.console)
 			console.info('hooks: ' + regexObject.toString() + ' regex matched ' + countMatching + ' functions.');
-		return self;
+		return $this;
 	};
-	
+
 	private._setHook = function (type, fn, hookFn) {
 		if (typeof hookFn !== 'function')
 			throw new hooksException('passed ' + type + '-hook is not a function');
 		fn.hooks.$data[type].push(hookFn);
 		if (private.log && window.console)
 			console.info('hooks: ' + fn.name + ' function ' + type + '-hook added.')
-		return self;
+		return $this;
 	};
-	
+
 	private._runPre = function (context, fn, args, usePromise) {
 		return private._runHook('pre', context, fn, args, undefined, usePromise);
 	};
-	
+
 	private._runPost = function (context, fn, args, result, usePromise) {
 		return private._runHook('post', context, fn, args, result, usePromise);
 	};
-	
+
 	private._runHook = function (type, context, fn, args, result, usePromise) {
 		var meta = fn.hooks.$data;
 		if (usePromise) {
 			var promise = Promise.resolve(result);
-			_.each(meta[type], function (hookFn, $index){
-				promise.then(function(output){
+			_.each(meta[type], function (hookFn, $index) {
+				promise.then(function (output) {
 					if (output !== undefined)
 						result = output;
 					if (type === 'post')
@@ -249,12 +249,12 @@ function hooks() {
 			if (private.log && window.console)
 				console.info('hooks: ' + fn.name + ' function ' + type + '-hook fired.');
 			return promise
-					.then(function(){
+					.then(function () {
 						if (private.log && window.console)
 							console.info('hooks: ' + fn.name + ' function ' + type + '-hook finished.')
 						return result;
 					})
-					.catch(function(err){
+					.catch(function (err) {
 						if (window.console) {
 							console.warn('hooks exception: ' + fn.name + ' function ' + type + '-hook failed: ' + ((typeof err === 'object' && err !== null && err.message) || 'uknown error'))
 							console.error(err);
@@ -265,7 +265,7 @@ function hooks() {
 			try {
 				if (private.log && window.console)
 					console.info('hooks: ' + fn.name + ' ' + type + '-hook (no promise version) fired.');
-				_.each(meta[type], function (hookFn, $index){
+				_.each(meta[type], function (hookFn, $index) {
 					if (type === 'post') {
 						var output = hookFn.apply(context, [args, meta, result]);
 						if (output !== undefined)
@@ -285,27 +285,27 @@ function hooks() {
 			}
 		}
 	};
-	
+
 	private._run = function (context, parentFn, fn) {
 		var args = arguments[3];
 		var usePromise = arguments[4];
 		var result;
 		if (usePromise)
 			return private._runPre(context, parentFn, args, true)
-					.then(function(){
+					.then(function () {
 						result = fn.apply(context, args);
 						return result;
 					})
-					.then(function(){
+					.then(function () {
 						return private._runPost(context, parentFn, args, result, true);
 					})
-					.then(function(output){
+					.then(function (output) {
 						if (output === undefined)
 							return result;
 						else
 							return output;
 					})
-					.catch(function(err){
+					.catch(function (err) {
 						throw err;
 					});
 		else {
@@ -319,7 +319,7 @@ function hooks() {
 		}
 	};
 
-	private.__constructor.apply(self, arguments);
+	private.__constructor.apply($this, arguments);
 }
 
 module.exports = new hooks();
