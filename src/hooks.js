@@ -2,7 +2,7 @@ var _ = require('underscore');
 var Promise = require('bluebird');
 Promise.longStackTraces();
 var exceptionFactory = require('exception-factory');
-var hooksException = new exceptionFactory('hooksException', 'hooks exception: ');
+var hooksException = exceptionFactory.build('hooksException', 'hooks exception: ');
 
 function hooks() {
 
@@ -43,7 +43,7 @@ function hooks() {
 			var args = arguments;
 			return private._run(context, newFn, fn, args, usePromise);
 		};
-		newFn.hooks = {};
+		newFn.hooks = newFn.$hooks = {};
 		newFn.hooks.$data = {
 			name: fn.$hooksFnName || fn.name,
 			pre: [],
@@ -94,7 +94,7 @@ function hooks() {
 		 * ASSIGN HOOK FUNCTIONS ON OBJECT
 		 */
 		if (object.hooks === undefined)
-			object.hooks = {};
+			object.hooks = object.$hooks = {};
 		object.hooks.$getters = {};
 		object.hooks.$setters = {};
 		object.hooks.$obj = object;

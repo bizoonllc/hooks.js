@@ -1,12 +1,12 @@
 module.exports = function (config) {
 	config.set({
-		basePath: './reports',
+		basePath: './',
 		plugins: [
 			'karma-chai',
 			'karma-mocha',
 			'karma-sinon',
 			'karma-browserify',
-			'karma-phantomjs-launcher',
+			'karma-chrome-launcher',
 			'sinon-chai',
 		],
 		frameworks: [
@@ -16,13 +16,13 @@ module.exports = function (config) {
 			'browserify',
 		],
 		browsers: [
-			'PhantomJS',
+			'Chrome',
 		],
 		files: [
-			'../test/*.test.js',
+			'./test/*.test.js',
 		],
 		preprocessors: {
-			'../test/*.test.js': ['browserify']
+			'./test/*.test.js': ['browserify']
 		},
 		browserify: {
 			debug: true,
