@@ -29,7 +29,13 @@ myObject.someFunction.$hooks.post(function($input, $inspect, $output) {...});
 myObject.someFunction();
 ```
 
-It can be also very useful for hooking setters and getters if you don't want to put too much complex logic inside them in the class:
+There is access to arguments inserted to function ($input), to value returned in .post hook $output which can be overwritten with return ...; statement (if return is not undefined).
+
+Also you've got some great references in $inspect object for both .pre and .post hooks, if it's setter or getter, property name is resolved (e.g. getName -> $inspect.property (name), setMyScores -> $inspect.property (myScores) ).
+
+## Use cases
+
+Hooks can be also very useful for hooking setters and getters if you don't want to put too much complex logic inside them in the class:
 
 ```
 function myClass () {
