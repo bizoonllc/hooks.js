@@ -48,8 +48,8 @@ function myClass () {
       if ($input[0].length < 5)// reference to firstArgument of myClass.setName(firstArgument)
         throw new Error($inspect.property + ' is too short'); // name is too short
     });
-    this.setName.$hooks.post(function($input, $inspect, $output){
-      return $output.toUpperCase();
+    this.getName.$hooks.post(function($input, $inspect, $output){
+      return $output.toUpperCase(); // overwrite original output, e.g. "John" would change to "JOHN"
     });
     this.getName.$hooks.pre(function($input, $inspect){
       if (this[$inspect.property] === undefined) // this.name === undefined?
