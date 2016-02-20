@@ -10,7 +10,7 @@ describe('hooks.js', function () {
 	afterEach(function () {
 	});
 
-	it('Expect hooks.mount to not throw error when called', function () {
+	it('expect hooks.mount to not throw error when called', function () {
 
 		var fn = function () {
 			var testFunction = function () {
@@ -21,7 +21,7 @@ describe('hooks.js', function () {
 		expect(fn).to.not.throw(Error);
 	});
 
-	it('Expect hooks.hookify to not throw error when called', function () {
+	it('expect hooks.hookify to not throw error when called', function () {
 
 		var fn = function () {
 			var testObject = {
@@ -36,7 +36,7 @@ describe('hooks.js', function () {
 		expect(fn).to.not.throw(Error);
 	});
 
-	it('Expect pre,post,before,after to not throw error when called on mounted function', function () {
+	it('expect pre,post,before,after to not throw error when called on mounted function', function () {
 
 		var fn = function () {
 			var testFunction = function () {
@@ -57,7 +57,7 @@ describe('hooks.js', function () {
 		expect(fn).to.not.throw(Error);
 	});
 
-	it('Expect pre,post,before,after to not throw error when called on hookified object', function () {
+	it('expect pre,post,before,after to not throw error when called on hookified object', function () {
 
 		var fn = function () {
 			var testObject = {
@@ -82,7 +82,7 @@ describe('hooks.js', function () {
 		expect(fn).to.not.throw(Error);
 	});
 
-	it('Expect pre,post,before,after to be functions mounted to chosen function', function () {
+	it('expect pre,post,before,after to be functions mounted to chosen function', function () {
 
 		var testFunction = function () {
 		};
@@ -95,7 +95,7 @@ describe('hooks.js', function () {
 		expect(testFunction.$hooks.after).to.be.a('function');
 	});
 
-	it('Expect output to be sum of pre, basic and post function', function () {
+	it('expect output to be sum of pre, basic and post function', function () {
 
 		var output = '';
 
@@ -118,7 +118,7 @@ describe('hooks.js', function () {
 		expect(output).to.be.equal('before center after');
 	});
 
-	it('Expect output to be converted to upper case by post hook', function () {
+	it('expect output to be converted to upper case by post hook', function () {
 
 		var testFunction = function () {
 			return 'Anna';
@@ -135,7 +135,7 @@ describe('hooks.js', function () {
 		expect(output).to.be.equal('ANNA');
 	});
 
-	it('Expect output to not be overwritten by post hook if undefined returned', function () {
+	it('expect output to not be overwritten by post hook if undefined returned', function () {
 
 		var testFunction = function () {
 			return 'Anna';
@@ -152,7 +152,7 @@ describe('hooks.js', function () {
 		expect(output).to.be.equal('Anna');
 	});
 
-	it('Expect output to be overwritten by post hook if null returned', function () {
+	it('expect output to be overwritten by post hook if null returned', function () {
 
 		var testFunction = function () {
 			return 'Anna';
@@ -169,7 +169,7 @@ describe('hooks.js', function () {
 		expect(output).to.be.equal(null);
 	});
 
-	it('Expect output to be correctly overwritten by post hooks where some of them modify output and some of them don\'t', function () {
+	it('expect output to be correctly overwritten by post hooks where some of them modify output and some of them don\'t', function () {
 
 		var testFunction = function () {
 			return 'Anna';
@@ -197,7 +197,7 @@ describe('hooks.js', function () {
 		expect(output).to.be.equal('@ANNA');
 	});
 
-	it('Expect output to not be modified by hooks after clean function was called', function () {
+	it('expect output to not be modified by hooks after clean function was called', function () {
 
 		var testFunction = function () {
 			return 'Anna';
@@ -216,7 +216,7 @@ describe('hooks.js', function () {
 		expect(output).to.be.equal('Anna');
 	});
 
-	it('Expect input to be modified by hooks', function () {
+	it('expect input to be modified by hooks', function () {
 
 		var testFunction = function (name) {
 			return name;
@@ -231,7 +231,7 @@ describe('hooks.js', function () {
 		expect(testFunction('Anna')).to.be.equal('ANNA');
 	});
 
-	it('Expect meta name to be the name of the function', function () {
+	it('expect meta name to be the name of the function', function () {
 
 		var nameOfTheFunction = undefined;
 
@@ -251,7 +251,7 @@ describe('hooks.js', function () {
 		expect(nameOfTheFunction).to.be.equal('testFunction');
 	});
 
-	it('Expect hits to be called 2 times on regex hook', function () {
+	it('expect hits to be called 2 times on regex hook', function () {
 
 		var testObject = {
 			name: 'Anna',
@@ -288,7 +288,7 @@ describe('hooks.js', function () {
 		expect(hits).to.be.equal(2);
 	});
 
-	it('Expect hits to be called 2 times on $getters', function () {
+	it('expect hits to be called 2 times on $getters', function () {
 
 		var testObject = {
 			name: 'Anna',
@@ -325,7 +325,7 @@ describe('hooks.js', function () {
 		expect(hits).to.be.equal(2);
 	});
 
-	it('Expect hooks to access properties of original hookified object', function () {
+	it('expect hooks to access properties of original hookified object', function () {
 
 		var testObject = {
 			name: 'Anna',
@@ -360,7 +360,7 @@ describe('hooks.js', function () {
 		testObject.setSurname('Johnson');
 	});
 
-	it('Expect only getters to be hookified when called hookify with regex second argument', function () {
+	it('expect only getters to be hookified when called hookify with regex second argument', function () {
 
 		var testObject = {
 			getName: function () {
@@ -381,7 +381,7 @@ describe('hooks.js', function () {
 		expect(testObject.setSurname.$hooks).to.be.an('undefined');
 	});
 
-	it('Expect only getters to be hookified when called hookify with "getters" second argument', function () {
+	it('expect only getters to be hookified when called hookify with "getters" second argument', function () {
 
 		var testObject = {
 			getName: function () {
@@ -402,7 +402,7 @@ describe('hooks.js', function () {
 		expect(testObject.setSurname.$hooks).to.be.an('undefined');
 	});
 
-	it('Expect meta property to be set correctly on getters and setters', function () {
+	it('expect meta property to be set correctly on getters and setters', function () {
 
 		var testObject = {
 			getName: function () {

@@ -7,6 +7,10 @@ module.exports = function (config) {
 			'karma-sinon',
 			'karma-browserify',
 			'karma-chrome-launcher',
+			'karma-firefox-launcher',
+			'karma-opera-launcher',
+			'karma-safari-launcher',
+			'karma-ie-launcher',
 			'sinon-chai',
 		],
 		frameworks: [
@@ -17,7 +21,29 @@ module.exports = function (config) {
 		],
 		browsers: [
 			'Chrome',
+			'Firefox',
+			'Opera',
+			'OperaClassic',
+			'Safari',
+			'IE',
+			'IE8',
+			'IE9',
+			'IE10'
 		],
+		customLaunchers: {
+			IE8: {
+				base: 'IE',
+				'x-ua-compatible': 'IE=EmulateIE8'
+			},
+			IE9: {
+				base: 'IE',
+				'x-ua-compatible': 'IE=EmulateIE9'
+			},
+			IE10: {
+				base: 'IE',
+				'x-ua-compatible': 'IE=EmulateIE10'
+			},
+		},
 		files: [
 			'./test/*.test.js',
 		],
