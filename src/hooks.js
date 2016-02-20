@@ -50,8 +50,18 @@ function hooks() {
 			post: [],
 			property: undefined,
 		};
-		if (newFn.hooks.$data.name.substr(0, 3) === 'get' || newFn.hooks.$data.name.substr(0, 3) === 'set') {
+		if (newFn.hooks.$data.name.substr(0, 3) === 'get' || newFn.hooks.$data.name.substr(0, 3) === 'set' || newFn.hooks.$data.name.substr(0, 3) === 'has') {
 			var property = newFn.hooks.$data.name.substr(3);
+			property = property.substr(0, 1).toLowerCase() + property.substr(1);
+			newFn.hooks.$data.property = property;
+		}
+		if (newFn.hooks.$data.name.substr(0, 2) === 'is' || newFn.hooks.$data.name.substr(0, 2) === 'do') {
+			var property = newFn.hooks.$data.name.substr(2);
+			property = property.substr(0, 1).toLowerCase() + property.substr(1);
+			newFn.hooks.$data.property = property;
+		}
+		if (newFn.hooks.$data.name.substr(0, 4) === 'does') {
+			var property = newFn.hooks.$data.name.substr(4);
 			property = property.substr(0, 1).toLowerCase() + property.substr(1);
 			newFn.hooks.$data.property = property;
 		}
