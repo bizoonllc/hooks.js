@@ -29,7 +29,9 @@ myObject.someFunction.$hooks.post(function($input, $inspect, $output) {...});
 myObject.someFunction();
 ```
 
-There is access to arguments inserted to function when it is called ($input) in both .pre() and .post() hooks; access to return value from basic hookified function is available in .post() hook ($output) which can be naturally overwritten with simple return ...; statement (if value in return statement is anything but undefined).
+There is access to arguments inserted to function when it is called ($input) in both .pre() and .post() hooks.
+
+There is output value returned from hookified function for .post() hook only ($output) which can be naturally optionally overwritten by .post() hook with simple return "myNewValue"; statement (if value in return statement is anything but undefined, if undefined is returned, hookified function will still return original value).
 
 Also you've got some great references in $inspect object for both .pre() and .post() hooks, if it's setter or getter, property name is resolved (e.g. getName -> $inspect.property (name), setMyScores -> $inspect.property (myScores) ).
 
