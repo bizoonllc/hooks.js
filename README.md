@@ -20,10 +20,10 @@ var hooks = require('hooks.js');
 hooks.hookify(myObject);
 
 // set hook before function
-myObject.someFunction.$hooks.before(function(args, meta) {...});
+myObject.someFunction.$hooks.pre(function(args, meta) {...});
 
 // set hook after function
-myObject.someFunction.$hooks.after(function(args, meta, result) {...});
+myObject.someFunction.$hooks.post(function(args, meta, result) {...});
 
 // now hooks are called before and after someFunction
 myObject.someFunction();
@@ -36,14 +36,14 @@ function myClass () {
 
   this._constructor = function() {
     hooks.hookify(this);
-    this.setName.$hooks.before(function(args, meta){
+    this.setName.$hooks.pre(function(args, meta){
       if (args[0].length < 5)
         throw new Error('Name is too short');
     });
-    this.setName.$hooks.after(function(args, meta, result){
+    this.setName.$hooks.post(function(args, meta, result){
       return result.toUpperCase();
     });
-    this.getName.$hooks.before(function(args, meta){
+    this.getName.$hooks.pre(function(args, meta){
       if (this.name === undefined)
         throw new Error('Name is undefined');
     });
@@ -66,17 +66,17 @@ You can also add hooks in batch on only matching functions:
 ```
 hooks.hookify(myObject);
 
-myObject.$hooks.before('^get(.*?)$', function(args, meta) {
+myObject.$hooks.pre('^get(.*?)$', function(args, meta) {
   console.log('Getter fired');
 });
 
-myObject.$hooks.before(new RegExp('^get(.*?)$'), function(args, meta) {
+myObject.$hooks.pre(new RegExp('^get(.*?)$'), function(args, meta) {
   var propertyName = meta.property;
   if (this[propertyName] === undefined)
     throw new Error(propertyName + ' property is undefined');
 });
 
-myObject.$hooks.$getters.before(new RegExp(function(args, meta) {
+myObject.$hooks.$getters.pre(new RegExp(function(args, meta) {
   // Do something
 });
 ```
@@ -132,10 +132,6 @@ Arguments: (@prehook_callback:Function)
 myFunction.$hooks.pre(function(args, meta){
   // Something
 });
-// OR
-myFunction.$hooks.before(function(args, meta){
-  // Something
-});
 ```
 
 ### post
@@ -144,10 +140,6 @@ Arguments: (@posthook_callback:Function)
 
 ```
 myFunction.$hooks.post(function(args, meta, result){
-  // Something
-});
-// OR
-myFunction.$hooks.after(function(args, meta, result){
   // Something
 });
 ```
@@ -170,15 +162,15 @@ myObject.$hooks.pre('^get(.*?)$', function(args, meta) {
   // Something
 });
 // OR
-myObject.$hooks.before(new RegExp('^get(.*?)$'), function(args, meta) {
+myObject.$hooks.pre(new RegExp('^get(.*?)$'), function(args, meta) {
   // Something
 });
 // OR
-myObject.$hooks.$getters.before(function(args, meta) {
+myObject.$hooks.$getters.pre(function(args, meta) {
   // Something
 });
 // OR
-myObject.$hooks.$setters.before(function(args, meta) {
+myObject.$hooks.$setters.pre(function(args, meta) {
   // Something
 });
 ```

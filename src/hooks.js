@@ -240,7 +240,7 @@ function hooks() {
 				promise.then(function (output) {
 					if (output !== undefined)
 						result = output;
-					if (type === 'post')
+					if (type === 'post' || type === 'after')
 						return hookFn.apply(context, [args, meta, result]);
 					else
 						return hookFn.apply(context, [args, meta]);
@@ -266,7 +266,7 @@ function hooks() {
 				if (private.log && window.console)
 					console.info('hooks: ' + fn.name + ' ' + type + '-hook (no promise version) fired.');
 				_.each(meta[type], function (hookFn, $index) {
-					if (type === 'post') {
+					if (type === 'post' || type === 'after') {
 						var output = hookFn.apply(context, [args, meta, result]);
 						if (output !== undefined)
 							result = output;
