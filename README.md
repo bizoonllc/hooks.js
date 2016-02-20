@@ -20,10 +20,10 @@ var hooks = require('hooks.js');
 hooks.hookify(myObject);
 
 // set hook before function
-myObject.someFunction.$hooks.pre(function(args, meta) {...});
+myObject.someFunction.$hooks.pre(function($input, $inspect) {...});
 
 // set hook after function
-myObject.someFunction.$hooks.post(function(args, meta, result) {...});
+myObject.someFunction.$hooks.post(function($input, $inspect, $output) {...});
 
 // now hooks are called before and after someFunction
 myObject.someFunction();
@@ -36,14 +36,14 @@ function myClass () {
 
   this._constructor = function() {
     hooks.hookify(this);
-    this.setName.$hooks.pre(function(args, meta){
-      if (args[0].length < 5)
+    this.setName.$hooks.pre(function($input, $inspect){
+      if ($input[0].length < 5)
         throw new Error('Name is too short');
     });
-    this.setName.$hooks.post(function(args, meta, result){
-      return result.toUpperCase();
+    this.setName.$hooks.post(function($input, $inspect, $output){
+      return $output.toUpperCase();
     });
-    this.getName.$hooks.pre(function(args, meta){
+    this.getName.$hooks.pre(function($input, $inspect){
       if (this.name === undefined)
         throw new Error('Name is undefined');
     });
@@ -66,17 +66,17 @@ You can also add hooks in batch on only matching functions:
 ```
 hooks.hookify(myObject);
 
-myObject.$hooks.pre('^get(.*?)$', function(args, meta) {
+myObject.$hooks.pre('^get(.*?)$', function($input, $inspect) {
   console.log('Getter fired');
 });
 
-myObject.$hooks.pre(new RegExp('^get(.*?)$'), function(args, meta) {
-  var propertyName = meta.property;
+myObject.$hooks.pre(new RegExp('^get(.*?)$'), function($input, $inspect) {
+  var propertyName = $inspect.property;
   if (this[propertyName] === undefined)
     throw new Error(propertyName + ' property is undefined');
 });
 
-myObject.$hooks.$getters.pre(new RegExp(function(args, meta) {
+myObject.$hooks.$getters.pre(new RegExp(function($input, $inspect) {
   // Do something
 });
 ```
@@ -129,7 +129,7 @@ var myFunction = myObject.myFunction;
 Arguments: (@prehook_callback:Function)
 
 ```
-myFunction.$hooks.pre(function(args, meta){
+myFunction.$hooks.pre(function($input, $inspect){
   // Something
 });
 ```
@@ -139,7 +139,7 @@ myFunction.$hooks.pre(function(args, meta){
 Arguments: (@posthook_callback:Function)
 
 ```
-myFunction.$hooks.post(function(args, meta, result){
+myFunction.$hooks.post(function($input, $inspect, $output){
   // Something
 });
 ```
@@ -158,19 +158,19 @@ myFunction.$hooks.clean();
 Arguments: (@regex:String||RegExp, @prehook_callback:Function)
 
 ```
-myObject.$hooks.pre('^get(.*?)$', function(args, meta) {
+myObject.$hooks.pre('^get(.*?)$', function($input, $inspect) {
   // Something
 });
 // OR
-myObject.$hooks.pre(new RegExp('^get(.*?)$'), function(args, meta) {
+myObject.$hooks.pre(new RegExp('^get(.*?)$'), function($input, $inspect) {
   // Something
 });
 // OR
-myObject.$hooks.$getters.pre(function(args, meta) {
+myObject.$hooks.$getters.pre(function($input, $inspect) {
   // Something
 });
 // OR
-myObject.$hooks.$setters.pre(function(args, meta) {
+myObject.$hooks.$setters.pre(function($input, $inspect) {
   // Something
 });
 ```
@@ -180,7 +180,7 @@ myObject.$hooks.$setters.pre(function(args, meta) {
 Arguments: (@regex:String||RegExp, @posthook_callback:Function)
 
 ```
-myObject.$hooks.post(new RegExp('^set(.*?)$'), function(args, meta, result) {
+myObject.$hooks.post(new RegExp('^set(.*?)$'), function($input, $inspect, $output) {
   // Something
 });
 ```
@@ -211,10 +211,10 @@ hooks.hookify(myClassObj);
 ...
 
 // Set custom hook actions
-myCustomObject.myFunction.$hooks.pre(function(args, meta) {
+myCustomObject.myFunction.$hooks.pre(function($input, $inspect) {
   console.log('Do sth before');
 });
-myCustomObject.myOtherFunction.$hooks.post(function(args, meta, result) {
+myCustomObject.myOtherFunction.$hooks.post(function($input, $inspect, $output) {
   console.log('Do sth after');
 });
 
@@ -243,7 +243,7 @@ myFunction = hooks.mount(myFunction);
 ...
 
 // Set custom hook actions
-myFunction.$hooks.pre(function(args, meta) {
+myFunction.$hooks.pre(function($input, $inspect) {
   console.log('Do sth before');
 });
 
