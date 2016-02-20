@@ -37,15 +37,15 @@ function myClass () {
   this._constructor = function() {
     hooks.hookify(this);
     this.setName.$hooks.pre(function($input, $inspect){
-      if ($input[0].length < 5)
-        throw new Error('Name is too short');
+      if ($input[0].length < 5)// reference to firstArgument of myClass.setName(firstArgument)
+        throw new Error($inspect.property + ' is too short'); // name is too short
     });
     this.setName.$hooks.post(function($input, $inspect, $output){
       return $output.toUpperCase();
     });
     this.getName.$hooks.pre(function($input, $inspect){
-      if (this.name === undefined)
-        throw new Error('Name is undefined');
+      if (this[$inspect.property] === undefined) // this.name === undefined?
+        throw new Error($inspect.property + ' is undefined'); // name is undefined
     });
   };
 
