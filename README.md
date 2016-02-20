@@ -84,7 +84,7 @@ myObject.$hooks.pre(new RegExp('^get(.*?)$'), function($input, $inspect) {
     throw new Error(propertyName + ' property is undefined');
 });
 
-myObject.$hooks.$getters.pre(new RegExp(function($input, $inspect) {
+myObject.$hooks.$getters.pre(function($input, $inspect) {
   // Do something
 });
 ```
