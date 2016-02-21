@@ -1,30 +1,34 @@
+"use strict";
 var hooks = require('./hooks');
 
-function myFunction (name) {
+function hello (name) {
 	return 'Hello ' + name + '!';
 };
 
-myFunction = hooks.mount(myFunction);
+hello = hooks.mount(hello);
 
 // validate input and throw error with function name
-myFunction.$hooks.pre('myFunction', function(args, meta) {
-	if (typeof args[0] !== 'String')
-		throw new Error('Name is not a string in ' + meta.name + ' function!');
+hello.$hooks.pre(function($input, $inspect) {
+	if (typeof $input[0] !== 'string')
+		throw new Error('Name is not a string in ' + $inspect.name + ' function!');
 });
 
 // modify input
-myFunction.$hooks.pre('myFunction', function(args, meta) {
-	args[0] = args[0].toUpperCase();
+hello.$hooks.pre(function($input, $inspect) {
+	$input[0] = $input[0].toUpperCase();
 });
 
 // modify input
-myFunction.$hooks.pre('myFunction', function(args, meta) {
-	args[0] = args[0] + '!';
+hello.$hooks.pre(function($input, $inspect) {
+	$input[0] = $input[0] + '!';
 });
 
-// log information
-myFunction.$hooks.post('myFunction', function(args, meta, result) {
-	console.log('myFunction fired with "' + args[0] + '" name.');
+// log information + modify output if "Anna"
+hello.$hooks.post(function($input, $inspect, $output) {
+	console.log('hello fired with "' + $input[0] + '" name.');
+	if ($input[0] === 'Anna')
+		return 'Hello Bob! I mean... ' + $input[0]; // trolling, if input is "Anna"
 });
 
-myFunction('Anna');
+hello('Anna'); // Hello Bob! I mean... Anna
+hello('Nancy'); // Hello Nancy!

@@ -1,6 +1,6 @@
 {
   "name": "hooks.js",
-  "version": "0.3.18",
+  "version": "0.3.19",
   "description": "Library to mount hooks to functions",
   "license": "MIT",
   "main": "src/hooks.js",
@@ -16,12 +16,9 @@
     "hooks",
     "pre hooks",
     "post hooks",
-    "server",
-    "client",
-    "browser",
     "hook",
     "validation",
-    "batch"
+    "filter"
   ],
   "dependencies": {
     "bluebird": "^3.0.6",
