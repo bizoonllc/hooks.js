@@ -1,6 +1,6 @@
 {
   "name": "hooks.js",
-  "version": "0.3.19",
+  "version": "0.3.20",
   "description": "Library to mount hooks to functions",
   "license": "MIT",
   "main": "src/hooks.js",

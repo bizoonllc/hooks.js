@@ -9,12 +9,13 @@ function hooks() {
 
 	var $this = this, $public = this;
 
+	$public.exception = hooksException;
+
 	var $private = {
 		supportedTypes: ['pre', 'post'],
 		plugins: [],
 		defaultUsePromise: false,
 		log: false,
-		exception: hooksException,
 	};
 	var $this_ = $private;
 
